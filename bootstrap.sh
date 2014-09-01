@@ -2,13 +2,24 @@
 
 ANDROID_SDK_FILENAME=android-sdk_r23.0.2-linux.tgz
 ANDROID_SDK=http://dl.google.com/android/$ANDROID_SDK_FILENAME
+NODE_FILENAME=node-latest.tar.gz
+NODE=http://nodejs.org/dist/$NODE_FILENAME
 
 #sudo apt-get install python-software-properties
 #sudo add-apt-repository ppa:webupd8team/java
 apt-get update
-apt-get install -y nodejs npm git openjdk-7-jdk ant expect
-# So ubuntu doesn't freak out about nodejs path, which is just silly
-ln -s /usr/bin/nodejs /usr/bin/node
+apt-get install -y git openjdk-7-jdk ant expect build-essential
+
+# Install latest version of Node
+if ! hash node 2>&-; then
+    echo Installing NodeJS...
+    mkdir /tmp/src && cd $_
+    wget -N $NODE
+    tar xzf $NODE_FILENAME && cd node-v*
+    ./configure
+    make && sudo make install
+    cd
+fi
 
 curl -O $ANDROID_SDK
 tar -xzvf $ANDROID_SDK_FILENAME
